@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    # No ports. Nothing is published to the host.
+    # cloudflared reaches this container at http://web:80 on the
+    # private compose network.
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.11.0
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    depends_on:
+      - web
+    restart: unless-stopped
